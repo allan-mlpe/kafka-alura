@@ -32,8 +32,29 @@ obs: ao rodar esse comando, cada linha que digitarmos no console será uma mensa
 
 # Criar um consumidor de mensagens no console
 ```
-bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic LOJA_NOVO_PEDIDO --from-beginning
+bin/kafka-console-consumer.sh --bootstrap-server <server_address> --topic <topic_name> --from-beginning
 ```
 obs: se não passarmos o parâmetro `--from-beginning`, o consumidor irá ignorar as mensagens que foram 
 enviadas antes da sua criação. Passando essa propriedade, lemos todas as mensagens, desde o início e não apenas as novas.
 
+# Alterar o número de partições de um tópico já existente
+```
+bin/kafka-topics.sh --alter --bootstrap-server <server_address> --topic <topic_name> --partitions <num_partitions>
+```
+Se quisermos alterar a configuração padrão de número de partições de uma instância do Kafka, devemos editar o arquivo que está no diretório `config/server.properties`.
+
+```
+# ...
+num.partitions=1
+# ...
+```
+
+# Descrever todos os consumer groups
+```
+bin/kafka-consumer-groups.sh --bootstrap-server <server_address> --describe --all-groups
+```
+
+# Descrever consumidores de um grupo específico
+```
+bin/kafka-consumer-groups.sh --bootstrap-server <server_address> --describe --group <group_name>
+```
