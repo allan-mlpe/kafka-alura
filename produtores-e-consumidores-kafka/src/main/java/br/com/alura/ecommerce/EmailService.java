@@ -7,25 +7,22 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.Properties;
-import java.util.UUID;
 
-public class FraudDetectorService {
+public class EmailService {
     public static void main(String[] args) {
         var consumer = new KafkaConsumer<String, String>(properties());
 
-        consumer.subscribe(Collections.singletonList("ECOMMERCE_NEW_ORDER"));
+        consumer.subscribe(Collections.singletonList("ECOMMERCE_SEND_EMAIL"));
 
         while(true) {
-            var records = consumer.poll(Duration.ofMillis(100)); // esses 100ms são uma espécie de timeout
-                                                                 // que esperaremos até que existam mensagens no tópico
-                                                                 // até seguir a execução do código.
+            var records = consumer.poll(Duration.ofMillis(100));
 
             if (!records.isEmpty()) {
                 System.out.println(records.count() + " record(s) found.");
 
                 for (var record : records) {
                     System.out.println("------------------------------------------------");
-                    System.out.println("Processing new order, checking for fraud...");
+                    System.out.println("::: SendEmail Service :::");
                     System.out.println("- Key::" + record.key());
                     System.out.println("- Value::" + record.value());
                     System.out.println("- Partition::" + record.partition());
@@ -33,13 +30,13 @@ public class FraudDetectorService {
                     System.out.println("- Topic::" + record.topic());
 
                     try {
-                        Thread.sleep(5000);
+                        Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         // ignoring
                         e.printStackTrace();
                     }
 
-                    System.out.println("Order processed!");
+                    System.out.println("Email sent!");
                 }
             }
         }
@@ -52,20 +49,7 @@ public class FraudDetectorService {
         properties.setProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         properties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         // a declaração do grupo é fundamental para iniciar o consumidor
-        properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, FraudDetectorService.class.getSimpleName());
-
-        // podemos passar um id para o consumidor
-        properties.setProperty(ConsumerConfig.CLIENT_ID_CONFIG, String.format("%s-%s", FraudDetectorService.class.getSimpleName(), UUID.randomUUID().toString()));
-
-        // a config max.poll.records diz para o kafka quantas mensagens enviar a cada poll
-
-        // ela tem relação com o tempo de processamento (max.poll.interval.ms)
-        // que é o tempo que devemos terminar de processar as mensagens buscadas em cada poll.
-        //
-        // caso contrário, o kafka entenderá que o consumidor "travou",
-        // expulsará ele do grupo e iniciará um rebalanceamento.
-        properties.setProperty(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "1");
-
+        properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, EmailService.class.getSimpleName());
 
         return properties;
     }
