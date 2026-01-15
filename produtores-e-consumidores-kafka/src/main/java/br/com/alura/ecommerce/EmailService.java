@@ -2,6 +2,8 @@ package br.com.alura.ecommerce;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 
+import java.util.Map;
+
 public class EmailService {
 
     private void parse(ConsumerRecord<String, Email> record) {
@@ -30,7 +32,8 @@ public class EmailService {
                 EmailService.class.getSimpleName(),
                 "ECOMMERCE_SEND_EMAIL",
                 emailService::parse,
-                Email.class)) {
+                Email.class,
+                Map.of())) {
 
             service.run();
         }
