@@ -15,19 +15,21 @@ public class KafkaService<T> implements Closeable {
 
     private final KafkaConsumer<String, T> consumer;
     private final ConsumerFunction<T> parse;
+    private final Class<T> type;
 
-    private KafkaService(String groupName, ConsumerFunction parse) {
+    private KafkaService(String groupName, ConsumerFunction<T> parse, Class<T> type) {
         this.consumer = new KafkaConsumer<>(properties(groupName));
         this.parse = parse;
+        this.type = type;
     }
 
-    public KafkaService(String groupName, String topic, ConsumerFunction parse) {
-        this(groupName, parse);
+    public KafkaService(String groupName, String topic, ConsumerFunction<T> parse, Class<T> type) {
+        this(groupName, parse, type);
         consumer.subscribe(Collections.singletonList(topic));
     }
 
-    public KafkaService(String groupName, Pattern pattern, ConsumerFunction parse) {
-        this(groupName, parse);
+    public KafkaService(String groupName, Pattern pattern, ConsumerFunction<T> parse, Class<T> type) {
+        this(groupName, parse, type);
         consumer.subscribe(pattern);
     }
 
@@ -45,7 +47,7 @@ public class KafkaService<T> implements Closeable {
         }
     }
 
-    private static Properties properties(String groupName) {
+    private Properties properties(String groupName) {
         var properties = new Properties();
 
         properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "127.0.0.1:9092");
@@ -58,7 +60,7 @@ public class KafkaService<T> implements Closeable {
         properties.setProperty(ConsumerConfig.CLIENT_ID_CONFIG, String.format("%s-%s", groupName, UUID.randomUUID().toString()));
 
         // propriedade customizada
-        properties.setProperty(GsonDeserializer.TYPE_CONFIG, String.class.getName());
+        properties.setProperty(GsonDeserializer.TYPE_CONFIG, this.type.getName());
 
         return properties;
     }
