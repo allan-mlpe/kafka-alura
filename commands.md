@@ -58,3 +58,8 @@ bin/kafka-consumer-groups.sh --bootstrap-server <server_address> --describe --al
 ```
 bin/kafka-consumer-groups.sh --bootstrap-server <server_address> --describe --group <group_name>
 ```
+
+# Deletar um consumer group
+```
+bin/kafka-consumer-groups.sh --bootstrap-server <server_address> --delete --group <group_name>
+```
