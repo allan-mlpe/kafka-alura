@@ -14,7 +14,7 @@ public class NewOrderMain {
     public static void main(String[] args) throws ExecutionException, InterruptedException {
         var producer = new KafkaProducer<String, String>(properties());
 
-        for(var i = 0; i < 100; i++) {// mensagem para novo pedido
+        for(var i = 0; i < 10; i++) {
             String newOrderKey = UUID.randomUUID().toString(); // a key é fundamental para garantir a distribuição
             // das mensagens entre os tópicos existentes
             String value = "123123,pedido1,309183091301";
