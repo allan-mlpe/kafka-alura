@@ -1,5 +1,5 @@
 <archetype>
-  <id>ecommerce</id>
+  <id>service-new-order</id>
   <sources>
     <source>src/main/java/App.java</source>
   </sources>
