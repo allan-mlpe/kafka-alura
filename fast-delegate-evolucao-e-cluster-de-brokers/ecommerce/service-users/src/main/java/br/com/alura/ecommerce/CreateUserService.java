@@ -14,9 +14,16 @@ public class CreateUserService {
         this.connection = DriverManager.getConnection(url);
 
         // cria a tabela
-        connection.createStatement().execute("create table Users (" +
-                "uuid varchar(200) primary key," +
-                "email varchar(200))");
+        try {
+            connection.createStatement().execute("create table Users (" +
+                    "uuid varchar(200) primary key," +
+                    "email varchar(200))");
+        } catch (SQLException e) {
+            // be careful, the sql could be wrong.
+            // we're doing like this for "educational purposes" to focus on Kafka
+            e.printStackTrace();
+        }
+
     }
 
     public static void main(String[] args) throws SQLException {
@@ -49,8 +56,8 @@ public class CreateUserService {
         PreparedStatement insert =
                 connection.prepareStatement("insert into Users (uuid, email) values (?, ?)");
 
-        insert.setString(1, "uuid");
-        insert.setString(2, "email");
+        insert.setString(1, order.userId());
+        insert.setString(2, order.email());
         insert.execute();
 
         System.out.println(String.format("Usuário %s com email %s adicionado", order.userId(), order.email()));
