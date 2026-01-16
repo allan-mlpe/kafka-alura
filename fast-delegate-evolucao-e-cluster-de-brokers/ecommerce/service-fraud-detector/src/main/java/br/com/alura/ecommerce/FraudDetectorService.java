@@ -27,7 +27,7 @@ public class FraudDetectorService {
         System.out.println("------------------------------------------------");
         System.out.println("Processing new order, checking for fraud...");
         System.out.println("- Key::" + record.key());
-        System.out.println("- Value::" + record.value().toString());
+        System.out.println("- Value::" + record.value());
         System.out.println("- Partition::" + record.partition());
         System.out.println("- Offset::" + record.offset());
         System.out.println("- Topic::" + record.topic());
@@ -43,11 +43,11 @@ public class FraudDetectorService {
 
         if (order.amount().compareTo(FRAUD_THRESHOLD_VALUE) >= 0) {
             // pretending that the fraud happens when the amount is >= threshold
-            orderKafkaDispatcher.send("ECOMMERCE_ORDER_REJECTED", order.userId(), order);
+            orderKafkaDispatcher.send("ECOMMERCE_ORDER_REJECTED", order.email(), order);
             System.out.println("Order rejected!" + order);
         } else {
             // order accepted
-            orderKafkaDispatcher.send("ECOMMERCE_ORDER_ACCEPTED", order.userId(), order);
+            orderKafkaDispatcher.send("ECOMMERCE_ORDER_ACCEPTED", order.email(), order);
             System.out.println("Order processed!" + order);
         }
     }

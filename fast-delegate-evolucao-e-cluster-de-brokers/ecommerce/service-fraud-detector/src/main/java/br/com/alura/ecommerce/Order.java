@@ -2,13 +2,14 @@ package br.com.alura.ecommerce;
 
 import java.math.BigDecimal;
 
-public record Order(String userId, String orderId, BigDecimal amount) {
+public record Order(String orderId, BigDecimal amount, String email) {
+
     @Override
     public String toString() {
         return "Order{" +
-                "userId='" + userId + '\'' +
-                ", orderId='" + orderId + '\'' +
+                "orderId='" + orderId + '\'' +
                 ", amount=" + amount +
+                ", email='" + email + '\'' +
                 '}';
     }
 }

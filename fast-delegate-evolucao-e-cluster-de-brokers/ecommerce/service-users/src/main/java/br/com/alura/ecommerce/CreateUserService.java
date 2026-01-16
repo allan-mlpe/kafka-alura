@@ -4,6 +4,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 
 import java.sql.*;
 import java.util.Map;
+import java.util.UUID;
 
 public class CreateUserService {
 
@@ -14,9 +15,16 @@ public class CreateUserService {
         this.connection = DriverManager.getConnection(url);
 
         // cria a tabela
-        connection.createStatement().execute("create table Users (" +
-                "uuid varchar(200) primary key," +
-                "email varchar(200))");
+        try {
+            connection.createStatement().execute("create table Users (" +
+                    "uuid varchar(200) primary key," +
+                    "email varchar(200))");
+        } catch (SQLException e) {
+            // be careful, the sql could be wrong.
+            // we're doing like this for "educational purposes" to focus on Kafka
+            e.printStackTrace();
+        }
+
     }
 
     public static void main(String[] args) throws SQLException {
@@ -38,22 +46,24 @@ public class CreateUserService {
         System.out.println("- Value::" + record.value().toString());
 
         var order = record.value();
+        var email = order.email();
 
-        if (isNewUser(order.email())) {
-            insertUser(order);
+        if (isNewUser(email)) {
+            insertUser(email);
         }
 
     }
 
-    private void insertUser(Order order) throws SQLException {
+    private void insertUser(String email) throws SQLException {
         PreparedStatement insert =
                 connection.prepareStatement("insert into Users (uuid, email) values (?, ?)");
+        var userId = UUID.randomUUID().toString();
 
-        insert.setString(1, "uuid");
-        insert.setString(2, "email");
+        insert.setString(1, userId);
+        insert.setString(2, email);
         insert.execute();
 
-        System.out.println(String.format("Usuário %s com email %s adicionado", order.userId(), order.email()));
+        System.out.println(String.format("Usuário %s com email %s adicionado", userId, email));
     }
 
     private boolean isNewUser(String email) throws SQLException {
