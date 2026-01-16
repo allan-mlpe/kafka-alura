@@ -24,7 +24,7 @@ public class LogService {
     private void parse(ConsumerRecord<String, String> record) {
         System.out.println(String.format(
                 "[LOG | %s | %s] key: %s, value: %s, partition: %s, offset: %s",
-                NewOrderMain.class.getSimpleName(),
+                LogService.class.getSimpleName(),
                 record.topic(),
                 record.key(),
                 record.value(),
