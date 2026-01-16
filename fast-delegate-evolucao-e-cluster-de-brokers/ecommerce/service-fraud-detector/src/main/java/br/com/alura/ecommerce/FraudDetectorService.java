@@ -8,7 +8,7 @@ import java.util.concurrent.ExecutionException;
 
 public class FraudDetectorService {
     private static final BigDecimal FRAUD_THRESHOLD_VALUE = new BigDecimal(4200);
-    private KafkaDispatcher<Object> orderKafkaDispatcher;
+    private final KafkaDispatcher<Order> orderKafkaDispatcher = new KafkaDispatcher<>();;
 
     public static void main(String[] args) {
         var fraudService = new FraudDetectorService();
@@ -21,8 +21,6 @@ public class FraudDetectorService {
 
             service.run();
         }
-
-        fraudService.orderKafkaDispatcher = new KafkaDispatcher<>();
     }
 
     private void parse(ConsumerRecord<String, Order> record) throws ExecutionException, InterruptedException {
@@ -46,11 +44,11 @@ public class FraudDetectorService {
         if (order.amount().compareTo(FRAUD_THRESHOLD_VALUE) >= 0) {
             // pretending that the fraud happens when the amount is >= threshold
             orderKafkaDispatcher.send("ECOMMERCE_ORDER_REJECTED", order.userId(), order);
+            System.out.println("Order rejected!" + order);
         } else {
             // order accepted
             orderKafkaDispatcher.send("ECOMMERCE_ORDER_ACCEPTED", order.userId(), order);
+            System.out.println("Order processed!" + order);
         }
-
-        System.out.println("Order processed!");
     }
 }
