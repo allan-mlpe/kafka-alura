@@ -52,7 +52,7 @@ public class BatchSendMessageService {
         var topic = message.getPayload();
 
         for (User user : users) {
-            userDispatcher.send(
+            userDispatcher.sendAsync(
                     topic,
                     user.uuid(),
                     message.getId().continueWith(BatchSendMessageService.class.getSimpleName()),
