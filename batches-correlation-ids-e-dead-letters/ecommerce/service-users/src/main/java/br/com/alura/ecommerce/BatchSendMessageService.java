@@ -43,15 +43,17 @@ public class BatchSendMessageService {
         }
     }
 
-    private void parse(ConsumerRecord<String, String> record) throws SQLException, ExecutionException, InterruptedException {
+    private void parse(ConsumerRecord<String, Message<String>> record) throws SQLException, ExecutionException, InterruptedException {
         System.out.println("------------------------------------------------");
-        System.out.println("Processing new order, checking for new user...");
+        System.out.println("Processing new batch");
         System.out.println("- Value::" + record.value());
 
         var users = getAllUsers();
+        var message = record.value();
+        var topic = message.getPayload();
 
         for (User user : users) {
-            userDispatcher.send("USER_GENERATE_READING_REPORT", user.uuid(), user);
+            userDispatcher.send(topic, user.uuid(), user);
         }
     }
 
