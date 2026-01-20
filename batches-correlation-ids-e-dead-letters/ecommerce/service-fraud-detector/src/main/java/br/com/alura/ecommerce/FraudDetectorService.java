@@ -10,7 +10,7 @@ public class FraudDetectorService {
     private static final BigDecimal FRAUD_THRESHOLD_VALUE = new BigDecimal(4200);
     private final KafkaDispatcher<Order> orderKafkaDispatcher = new KafkaDispatcher<>();;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
         var fraudService = new FraudDetectorService();
         try(var service = new KafkaService<>(
                 FraudDetectorService.class.getSimpleName(),
