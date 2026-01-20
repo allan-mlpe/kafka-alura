@@ -21,7 +21,7 @@ public class LogService {
         }
     }
 
-    private void parse(ConsumerRecord<String, String> record) {
+    private void parse(ConsumerRecord<String, Message<String>> record) {
         System.out.println(String.format(
                 "[LOG | %s | %s] key: %s, value: %s, partition: %s, offset: %s",
                 LogService.class.getSimpleName(),
