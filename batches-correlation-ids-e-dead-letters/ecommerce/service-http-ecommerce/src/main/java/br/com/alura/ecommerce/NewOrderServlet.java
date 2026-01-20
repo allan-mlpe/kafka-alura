@@ -33,10 +33,18 @@ public class NewOrderServlet extends HttpServlet {
             var email = req.getParameter("email");
 
             var order = new Order(orderId, amount, email);
-            this.orderDispatcher.send("ECOMMERCE_NEW_ORDER", email, order);
+            this.orderDispatcher.send(
+                    "ECOMMERCE_NEW_ORDER",
+                    email,
+                    new CorrelationId(NewOrderServlet.class.getSimpleName()),
+                    order);
 
             var successEmail = new Email("Thanks for your order!", "We're processing your products.");
-            this.emailDispatcher.send("ECOMMERCE_SEND_EMAIL", email, successEmail);
+            this.emailDispatcher.send(
+                    "ECOMMERCE_SEND_EMAIL",
+                    email,
+                    new CorrelationId(NewOrderServlet.class.getSimpleName()),
+                    successEmail);
 
             System.out.println("New order sent successfully");
 

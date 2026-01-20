@@ -29,6 +29,7 @@ public class GenerateAllReportsServlet extends HttpServlet {
             taskDispatcher.send(
                     "SEND_MESSAGE_TO_ALL_USERS",
                     UUID.randomUUID().toString(), // usando um randomUUID como key para ter paralelismo com consumidores em partições diferentes
+                    new CorrelationId(GenerateAllReportsServlet.class.getSimpleName()),
                     "USER_GENERATE_READING_REPORT"
             );
 
