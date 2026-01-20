@@ -1,19 +1,27 @@
 package br.com.alura.ecommerce;
 
 public class Message<T> {
-    private final CorrelationId correlationId;
+    private final CorrelationId id;
     private final T payload;
 
-    Message(CorrelationId correlationId, T payload) {
-        this.correlationId = correlationId;
+    Message(CorrelationId id, T payload) {
+        this.id = id;
         this.payload = payload;
     }
 
     @Override
     public String toString() {
         return "Message{" +
-                "correlationId=" + correlationId +
+                "correlationId=" + id +
                 ", payload=" + payload +
                 '}';
+    }
+
+    public T getPayload() {
+        return payload;
+    }
+
+    public CorrelationId getId() {
+        return id;
     }
 }
