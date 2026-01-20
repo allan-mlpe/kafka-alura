@@ -66,9 +66,6 @@ public class KafkaService<T> implements Closeable {
         // podemos passar um id para o consumidor
         properties.setProperty(ConsumerConfig.CLIENT_ID_CONFIG, String.format("%s-%s", groupName, UUID.randomUUID().toString()));
 
-        // propriedade customizada
-        properties.setProperty(GsonDeserializer.TYPE_CONFIG, type.getName());
-
         // sobrescreves propriedades passadas como parâmetro
         properties.putAll(overrideProperties);
 
