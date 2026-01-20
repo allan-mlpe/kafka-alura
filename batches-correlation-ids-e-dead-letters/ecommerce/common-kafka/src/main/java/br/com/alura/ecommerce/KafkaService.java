@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 
 public class KafkaService<T> implements Closeable {
 
-    private final KafkaConsumer<String, T> consumer;
+    private final KafkaConsumer<String, Message<T>> consumer;
     private final ConsumerFunction<T> parse;
 
     private KafkaService(String groupName, ConsumerFunction<T> parse, Class<T> type, Map<String,String> overrideProperties) {
@@ -65,9 +65,6 @@ public class KafkaService<T> implements Closeable {
 
         // podemos passar um id para o consumidor
         properties.setProperty(ConsumerConfig.CLIENT_ID_CONFIG, String.format("%s-%s", groupName, UUID.randomUUID().toString()));
-
-        // propriedade customizada
-        properties.setProperty(GsonDeserializer.TYPE_CONFIG, type.getName());
 
         // sobrescreves propriedades passadas como parâmetro
         properties.putAll(overrideProperties);
