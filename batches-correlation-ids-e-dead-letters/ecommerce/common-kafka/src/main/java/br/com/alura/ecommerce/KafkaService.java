@@ -17,18 +17,18 @@ public class KafkaService<T> implements Closeable {
     private final KafkaConsumer<String, Message<T>> consumer;
     private final ConsumerFunction<T> parse;
 
-    private KafkaService(String groupName, ConsumerFunction<T> parse, Class<T> type, Map<String,String> overrideProperties) {
-        this.consumer = new KafkaConsumer<>(properties(groupName, overrideProperties, type));
+    private KafkaService(String groupName, ConsumerFunction<T> parse, Map<String,String> overrideProperties) {
+        this.consumer = new KafkaConsumer<>(properties(groupName, overrideProperties));
         this.parse = parse;
     }
 
-    public KafkaService(String groupName, String topic, ConsumerFunction<T> parse, Class<T> type , Map<String,String> overrideProperties) {
-        this(groupName, parse, type, overrideProperties);
+    public KafkaService(String groupName, String topic, ConsumerFunction<T> parse, Map<String,String> overrideProperties) {
+        this(groupName, parse, overrideProperties);
         consumer.subscribe(Collections.singletonList(topic));
     }
 
-    public KafkaService(String groupName, Pattern pattern, ConsumerFunction<T> parse, Class<T> type, Map<String,String> overrideProperties) {
-        this(groupName, parse, type, overrideProperties);
+    public KafkaService(String groupName, Pattern pattern, ConsumerFunction<T> parse, Map<String,String> overrideProperties) {
+        this(groupName, parse, overrideProperties);
         consumer.subscribe(pattern);
     }
 
@@ -53,7 +53,7 @@ public class KafkaService<T> implements Closeable {
         }
     }
 
-    private Properties properties(String groupName, Map<String, String> overrideProperties, Class<T> type) {
+    private Properties properties(String groupName, Map<String, String> overrideProperties) {
         var properties = new Properties();
 
         properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "127.0.0.1:9092");
