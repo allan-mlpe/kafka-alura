@@ -1,5 +1,7 @@
-package br.com.alura.ecommerce;
+package br.com.alura.ecommerce.dispatcher;
 
+import br.com.alura.ecommerce.CorrelationId;
+import br.com.alura.ecommerce.Message;
 import org.apache.kafka.clients.producer.*;
 import org.apache.kafka.common.serialization.StringSerializer;
 
@@ -16,7 +18,7 @@ public class KafkaDispatcher<T> implements Closeable {
         this.producer = new KafkaProducer<>(properties());
     }
 
-    void send(String topic, String key, CorrelationId id, T payload) throws ExecutionException, InterruptedException {
+    public void send(String topic, String key, CorrelationId id, T payload) throws ExecutionException, InterruptedException {
         Future<RecordMetadata> future = sendAsync(topic, key, id, payload);
         future.get();
     }
