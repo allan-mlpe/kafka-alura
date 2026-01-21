@@ -24,7 +24,7 @@ public class KafkaDispatcher<T> implements Closeable {
     }
 
     public Future<RecordMetadata> sendAsync(String topic, String key, CorrelationId id, T payload) {
-        var message = new Message<>(id, payload);
+        var message = new Message<>(id.continueWith("_" + topic), payload);
         var record = new ProducerRecord<>(topic, key, message);
 
         Callback callback = (data, ex) -> {
