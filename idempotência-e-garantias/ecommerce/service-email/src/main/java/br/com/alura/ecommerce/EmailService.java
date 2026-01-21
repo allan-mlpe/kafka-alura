@@ -1,5 +1,6 @@
 package br.com.alura.ecommerce;
 
+import br.com.alura.ecommerce.consumer.ConsumerService;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 
 public class EmailService implements ConsumerService<Email> {
@@ -32,6 +33,6 @@ public class EmailService implements ConsumerService<Email> {
     }
 
     public static void main(String[] args) {
-        new ServiceRunner<>(EmailService::new).start(5);
+        new br.com.alura.ecommerce.consumer.ServiceRunner<>(EmailService::new).start(5);
     }
 }
