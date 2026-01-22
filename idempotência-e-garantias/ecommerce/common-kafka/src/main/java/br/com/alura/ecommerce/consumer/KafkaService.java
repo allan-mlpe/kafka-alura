@@ -78,6 +78,17 @@ public class KafkaService<T> implements Closeable {
         // podemos passar um id para o consumidor
         properties.setProperty(ConsumerConfig.CLIENT_ID_CONFIG, String.format("%s-%s", groupName, UUID.randomUUID().toString()));
 
+        // essa configuração define o comportamento do consumidor quando não há um offset inicial ou se o offset atual
+        // não existe mais no servidor (esses cenários ocorrem geralmente quando surge um novo Consumer Group ou quando
+        // um servidor ficou tanto tempo offline que, ao voltar, as mensagens que ele deveria ler já foram apagadas pela
+        // política de retenção do Kafka). Os valores para essa config podem ser:
+        // - earliest: lê todas as mensagens que estão disponíveis no tópico, desde a mais antiga.
+        // - latest: ignora as mensagens antigas e lê somente as mensagens que chegarem após o momento que o Consumer
+        //           Group iniciou.
+        // - none: se não houver um offset gravado para o Consumer Group, o Kafka retornará um erro para o Consumidor no
+        //         no momento do poll, ao invés de tentar resetar o offset para início ou fim.
+        properties.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
+
         // sobrescreves propriedades passadas como parâmetro
         properties.putAll(overrideProperties);
 
