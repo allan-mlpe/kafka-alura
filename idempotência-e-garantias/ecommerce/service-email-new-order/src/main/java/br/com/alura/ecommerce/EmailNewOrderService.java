@@ -1,30 +1,20 @@
 package br.com.alura.ecommerce;
 
-import br.com.alura.ecommerce.consumer.KafkaService;
+import br.com.alura.ecommerce.consumer.ConsumerService;
+import br.com.alura.ecommerce.consumer.ServiceRunner;
 import br.com.alura.ecommerce.dispatcher.KafkaDispatcher;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 
-import java.math.BigDecimal;
-import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
-public class EmailNewOrderService {
+public class EmailNewOrderService implements ConsumerService<Order> {
     private final KafkaDispatcher<Email> emailDispatcher = new KafkaDispatcher<>();;
 
-    public static void main(String[] args) throws ExecutionException, InterruptedException {
-        var fraudService = new EmailNewOrderService();
-        try(var service = new KafkaService<>(
-                EmailNewOrderService.class.getSimpleName(),
-                "ECOMMERCE_NEW_ORDER",
-                fraudService::parse,
-                Map.of())) {
-
-            service.run();
-        }
+    public static void main(String[] args) {
+        new ServiceRunner<>(EmailNewOrderService::new).start(1);
     }
 
-    private void parse(ConsumerRecord<String, Message<Order>> record) throws ExecutionException, InterruptedException {
+    public void parse(ConsumerRecord<String, Message<Order>> record) throws ExecutionException, InterruptedException {
         System.out.println("------------------------------------------------");
         System.out.println("Processing new order, preparing email");
         System.out.println("- Key::" + record.key());
@@ -45,5 +35,15 @@ public class EmailNewOrderService {
                 userEmail,
                 id,
                 successEmail);
+    }
+
+    @Override
+    public String getTopic() {
+        return "ECOMMERCE_NEW_ORDER";
+    }
+
+    @Override
+    public String getConsumerGroup() {
+        return EmailNewOrderService.class.getSimpleName();
     }
 }
