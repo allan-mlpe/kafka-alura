@@ -29,7 +29,7 @@ public class CreateUserService implements ConsumerService<Order> {
 
     }
 
-    public static void main(String[] args) throws SQLException, ExecutionException, InterruptedException {
+    public static void main(String[] args) {
         new ServiceRunner<>(CreateUserService::new).start(1);
     }
 
