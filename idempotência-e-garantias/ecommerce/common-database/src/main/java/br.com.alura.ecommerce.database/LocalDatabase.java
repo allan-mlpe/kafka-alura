@@ -23,7 +23,7 @@ public class LocalDatabase {
             e.printStackTrace();
         }
     }
-    
+
     private PreparedStatement prepare(String statement, String[] params) throws SQLException {
         PreparedStatement preparedStatement =
                 connection.prepareStatement(statement);
@@ -34,11 +34,15 @@ public class LocalDatabase {
         return preparedStatement;
     }
 
-    public void update(String statement, String ... params) throws SQLException {
-        prepare(statement, params).execute();
+    public boolean update(String statement, String ... params) throws SQLException {
+        return prepare(statement, params).execute();
     }
 
     public ResultSet query(String query, String ... params) throws SQLException {
         return prepare(query, params).executeQuery();
+    }
+
+    public void close() throws SQLException {
+        connection.close();
     }
 }
