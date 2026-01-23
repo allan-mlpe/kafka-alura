@@ -40,3 +40,5 @@ build/
 
 ### SQLite ###
 users_database.db
+fraud_db.db
+orders_database.db
